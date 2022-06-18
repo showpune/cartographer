@@ -39,7 +39,9 @@ spec:
         name: image
       params:
         - name: image_prefix
-          value: #@ data.values.image_prefix
+          value: showpune/cartographer-test-
+        - name: builder_name
+          default: go-builder
       sources:
         - resource: source-provider
           name: source

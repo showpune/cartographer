@@ -12,12 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#@data/values
+#@ load("@ytt:data", "data")
 ---
-service_account_name: cartographer-example-basic-sc-sa
-image_prefix: showpune/cartographer-test-
-workload_name: dev
-registry:
-  server: https://index.docker.io/v1/
-  username: showpune
-  password: test
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: dev-java-native
+  labels:
+    app.tanzu.vmware.com/workload-type: web
+spec:
+  serviceAccountName: cartographer-example-basic-sc-sa
+  source:
+    git:
+      url: https://github.com/showpune/java-native.git
+      ref:
+        branch: master
+  build:
+    env:
+      - name: BP_NATIVE_IMAGE
+        value: "true"
+  params:
+    - name: builder_name
+      value: java-builder
