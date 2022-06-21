@@ -33,6 +33,15 @@ spec:
 
 ---
 apiVersion: kpack.io/v1alpha2
+kind: ClusterStore
+metadata:
+  name: java-native-store
+spec:
+  sources:
+    - image: gcr.io/paketo-buildpacks/java-native-image
+
+---
+apiVersion: kpack.io/v1alpha2
 kind: ClusterStack
 metadata:
   name: stack
@@ -51,7 +60,7 @@ spec:
   serviceAccountRef:
     name: cartographer-example-registry-creds-sa
     namespace: default
-  tag: #@ data.values.image_prefix + "go-builder"
+  tag: showpune/kpack-shared-go-builder
   stack:
     name: stack
     kind: ClusterStack
@@ -71,7 +80,7 @@ spec:
   serviceAccountRef:
     name: cartographer-example-registry-creds-sa
     namespace: default
-  tag: #@ data.values.image_prefix + "java-builder"
+  tag: showpune/kpack-shared-java-builder
   stack:
     name: stack
     kind: ClusterStack
@@ -81,3 +90,23 @@ spec:
   order:
     - group:
         - id: paketo-buildpacks/java
+
+---
+apiVersion: kpack.io/v1alpha2
+kind: ClusterBuilder
+metadata:
+  name: java-native-builder
+spec:
+  serviceAccountRef:
+    name: cartographer-example-registry-creds-sa
+    namespace: default
+  tag: showpune/kpack-shared-java-native-builder
+  stack:
+    name: stack
+    kind: ClusterStack
+  store:
+    name: java-native-store
+    kind: ClusterStore
+  order:
+    - group:
+        - id: paketo-buildpacks/java-native-image

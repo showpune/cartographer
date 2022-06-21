@@ -36,7 +36,7 @@ spec:
     metadata:
       name: $(workload.metadata.name)$
     spec:
-      serviceAccountName: cartographer-example-registry-creds-sa
+      serviceAccountName: cartographer-example-basic-sc-sa
       fetch:
         - inline:
             paths:
@@ -72,14 +72,19 @@ spec:
                   template:
                     metadata:
                       annotations:
-                        autoscaling.knative.dev/minScale: "1"
+                        autoscaling.knative.dev/minScale: "0"
                     spec:
-                      serviceAccountName: cartographer-example-registry-creds-sa
+                      serviceAccountName: cartographer-example-basic-sc-sa
                       containers:
                         - name: workload
                           image: $(images.image.image)$
                           securityContext:
                             runAsUser: 1000
+                    traffic:
+                    - latestRevision: true
+                      percent: 20
+                    - tag: current
+                      percent: 80
       template:
         - ytt: {}
       deploy:

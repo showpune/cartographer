@@ -30,3 +30,7 @@ spec:
   params:
     - name: builder_name
       value: java-builder
+  build:
+    env:
+      - name: BPL_DEBUG_ENABLED
+        value: "true"

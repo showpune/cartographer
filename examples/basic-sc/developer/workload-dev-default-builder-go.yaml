@@ -30,4 +30,4 @@ spec:
   build:
     env:
       - name: CGO_ENABLED
-        value: "0"
+        value: "3"
