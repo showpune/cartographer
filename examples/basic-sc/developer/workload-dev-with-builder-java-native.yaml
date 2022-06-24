@@ -31,6 +31,8 @@ spec:
     env:
       - name: BP_NATIVE_IMAGE
         value: "true"
+      - name: TARGET
+        value: "222"
   params:
     - name: builder_name
       value: java-native-builder
