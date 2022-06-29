@@ -1,0 +1,1 @@
+kubectl create secret docker-registry shared-registry-credentials --docker-server=serviceacr.azurecr.io --docker-username=serviceacr --docker-password=1dXPkDXTRv+DlZxi/n8HRC0IjVdKRadY --docker-email=zhiyongli@microsoft.com -n asa-system

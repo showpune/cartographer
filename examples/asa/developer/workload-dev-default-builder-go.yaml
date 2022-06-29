@@ -14,14 +14,20 @@
 
 #@ load("@ytt:data", "data")
 ---
-
-apiVersion: v1
-kind: ServiceAccount
+apiVersion: carto.run/v1alpha1
+kind: Workload
 metadata:
-  name: cartographer-example-registry-creds-sa
-#@ if data.values.registry.password != "":
-secrets:
-  - name: registry-credentials
-imagePullSecrets:
-  - name: registry-credentials
-#@ end
+  name: dev-go
+  labels:
+    app.tanzu.vmware.com/workload-type: web
+spec:
+  serviceAccountName: cartographer-example-basic-sc-sa
+  source:
+    git:
+      url: https://github.com/carto-labs/hello-world
+      ref:
+        branch: main
+  build:
+    env:
+      - name: CGO_ENABLED
+        value: "3"

@@ -13,14 +13,26 @@
 # limitations under the License.
 
 #@ load("@ytt:data", "data")
-#@ load("@ytt:json", "json")
-
 ---
-apiVersion: v1
-kind: Secret
+apiVersion: carto.run/v1alpha1
+kind: Workload
 metadata:
-  name: registry-credentials
-type: kubernetes.io/dockerconfigjson
-stringData:
-  #@ registry_creds = {"username": data.values.registry.username, "password": data.values.registry.password}
-  .dockerconfigjson: #@ json.encode({"auths": {data.values.registry.server: registry_creds}})
+  name: dev-java-native
+  labels:
+    app.tanzu.vmware.com/workload-type: web
+spec:
+  serviceAccountName: namespace-service-account
+  source:
+    git:
+      url: https://github.com/showpune/java-native.git
+      ref:
+        branch: master
+  build:
+    env:
+      - name: BP_NATIVE_IMAGE
+        value: "true"
+      - name: TARGET
+        value: "22"
+  params:
+    - name: builder_name
+      value: java-native-builder
