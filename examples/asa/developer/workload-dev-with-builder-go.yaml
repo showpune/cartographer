@@ -21,7 +21,7 @@ metadata:
   labels:
     app.tanzu.vmware.com/workload-type: web
 spec:
-  serviceAccountName: cartographer-example-basic-sc-sa
+  serviceAccountName: namespace-service-account
   source:
     git:
       url: https://github.com/carto-labs/hello-world
@@ -31,3 +31,8 @@ spec:
     env:
       - name: CGO_ENABLED
         value: "3"
+  params:
+    - name: builder_name
+      value: go-builder
+    - name: image_prefix
+      value: showpune/cartographer-user1-

@@ -32,7 +32,9 @@ spec:
       - name: BP_NATIVE_IMAGE
         value: "true"
       - name: TARGET
-        value: "22"
+        value: "23"
   params:
     - name: builder_name
       value: java-native-builder
+    - name: image_prefix
+      value: showpune/cartographer-user1-

@@ -74,7 +74,7 @@ spec:
                       annotations:
                         autoscaling.knative.dev/minScale: "0"
                     spec:
-                      serviceAccountName: cartographer-example-basic-sc-sa
+                      serviceAccountName: namespace-service-account
                       containers:
                         - name: workload
                           image: $(images.image.image)$
