@@ -17,22 +17,16 @@
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: dev-go
+  name: currentNS-java
   labels:
     app.tanzu.vmware.com/workload-type: web
 spec:
   serviceAccountName: namespace-service-account
   source:
     git:
-      url: https://github.com/carto-labs/hello-world
+      url: https://github.com/showpune/java-source.git
       ref:
-        branch: main
-  build:
-    env:
-      - name: CGO_ENABLED
-        value: "3"
+        branch: master
   params:
-    - name: builder_name
-      value: go-builder
     - name: image_prefix
-      value: showpune/cartographer-user1-
+      value: showpune/cartographer-currentNS-
