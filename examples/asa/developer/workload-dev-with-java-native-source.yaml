@@ -31,8 +31,8 @@ spec:
     env:
       - name: BP_NATIVE_IMAGE
         value: "true"
-      - name: BP_NATIVE_IMAGE_BUILT_ARTIFACT
-        value: target/*.[ejw]ar 
+      - name: BPE_TARGET
+        value: "native image from source code"
   params:
     - name: builder_name
       value: java-native-builder

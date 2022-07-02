@@ -2,7 +2,6 @@ read -p "please enter your namespace: " namespace
 kubectl create namespace $namespace
 kubectl config set-context --current --namespace=$namespace
 export kubenamespace=$namespace
-echo $kubenamespace
 
 read -s -p "please enter your private password: " dockerpassword
 echo 'Create secret to write the customer image'

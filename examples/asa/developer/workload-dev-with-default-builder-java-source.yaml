@@ -24,9 +24,13 @@ spec:
   serviceAccountName: namespace-service-account
   source:
     git:
-      url: https://github.com/showpune/java-source.git
+      url: https://github.com/showpune/java-native.git
       ref:
         branch: master
+  build:
+    env:
+      - name: BPE_TARGET
+        value: "normal image from source code"
   params:
     - name: image_prefix
       value: showpune/cartographer-currentNS-

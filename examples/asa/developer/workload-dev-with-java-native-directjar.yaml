@@ -26,10 +26,12 @@ spec:
     env:
       - name: BP_NATIVE_IMAGE
         value: "true"
+      - name: BPE_TARGET
+        value: "native image from direct jar"
   params:
     - name: image_prefix
       value: showpune/cartographer-currentNS-
     - name: builder_name
       value: java-native-builder
     - name: jar_source
-      value: https://mssdevsharedstorage.file.core.windows.net/zhiyongtest/directjar/java-native-0.0.1-SNAPSHOT.jar?se=2022-10-08T13%3A41%3A41Z&sp=r&sv=2018-11-09&sr=f&sig=%2Bi6VT3kJC7zGuokJtYAq43JEKW2E1sR3y5H86/2xreo%3D
+      value: https://mssdevsharedstorage.file.core.windows.net/zhiyongtest/directjar/java-native-0.0.1-SNAPSHOT.jar?se=2022-10-10T10%3A48%3A45Z&sp=r&sv=2018-11-09&sr=f&sig=AWHdAqwOBxdQfyVunQUfQC0FaAmhWSNoq3NQWJk2gUY%3D
