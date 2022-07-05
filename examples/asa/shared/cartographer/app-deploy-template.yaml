@@ -36,6 +36,11 @@ spec:
     metadata:
       name: $(workload.metadata.name)$
     spec:
+      cluster:
+        namespace: ns2
+        kubeconfigSecretRef:
+          name: cluster1  
+          key: value
       serviceAccountName: namespace-service-account
       fetch:
         - inline:
