@@ -17,9 +17,9 @@
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: currentNS-java-native
+  name: currentNS-java-containerapp
   labels:
-    app.tanzu.vmware.com/workload-type: web
+    app.tanzu.vmware.com/workload-type: containerapp
 spec:
   serviceAccountName: namespace-service-account
   source:
@@ -29,12 +29,10 @@ spec:
         branch: master
   build:
     env:
-      - name: BP_NATIVE_IMAGE
-        value: "true"
       - name: BPE_TARGET
-        value: "native image from source code"
+        value: "normal image from source code"
   params:
-    - name: builder_name
-      value: java-native-builder
     - name: image_prefix
       value: showpune/cartographer-currentNS-
+    - name: namespace
+      value: currentNS

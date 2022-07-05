@@ -56,9 +56,9 @@ spec:
                       - name: http
                         image: $(images.image.image)$
                         imagePullPolicy: Always
-                    ports:
-                      - name: http
-                        containerPort: 8080
+                        ports:
+                        - name: http
+                          containerPort: 8080
                   httpOptions:
                     corsPolicy:
                       allowedOrigins: ["*"]

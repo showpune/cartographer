@@ -17,10 +17,10 @@
 apiVersion: carto.run/v1alpha1
 kind: ClusterSupplyChain
 metadata:
-  name: supply-chain-containerapp
+  name: supply-chain-containerapp-directjar
 spec:
   selector:
-    app.tanzu.vmware.com/workload-type: containerapp
+    app.tanzu.vmware.com/workload-type: containerapp-directjar
 
   #
   #     source-provider                 fluxcd/GitRepository
@@ -28,23 +28,17 @@ spec:
   #           <--[img]-- deployer       kapp-ctrl/App
   #
   resources:
-    - name: source-provider
-      templateRef:
-        kind: ClusterSourceTemplate
-        name: source
-
     - name: image-builder
       templateRef:
         kind: ClusterImageTemplate
-        name: image
+        name: image-directjar
       params:
         - name: image_prefix
           default: test
         - name: builder_name
           default: java-builder
-      sources:
-        - resource: source-provider
-          name: source
+        - name: jar_source
+          default: jar-source
 
     - name: deployer
       templateRef:
