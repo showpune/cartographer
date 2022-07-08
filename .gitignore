@@ -16,3 +16,4 @@ kubeconfig
 .vscode/launch.json
 .vscode/settings.json
 .vscode/targets.log
+examples/asa/temp
