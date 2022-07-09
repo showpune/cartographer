@@ -9,7 +9,10 @@ spec:
   build:
     env:
       - name: BPE_TARGET
-        value: "normal image from direct jar"
+        value: "Normal image from direct jar"
+  env:
+    - name: BPE_TARGET
+      value: "Runtime Normal image from direct jar"
   params:
     - name: image_prefix
       value: showpune/cartographer-currentNS-

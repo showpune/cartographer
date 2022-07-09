@@ -68,8 +68,10 @@ spec:
               image: #@ data.values.image
               securityContext:
                 runAsUser: 1000
-              #@ if hasattr(data.values.workload.spec, "env"):
               env:
+                - name: JAVA_TOOL_OPTIONS
+                  value: -Dmanagement.endpoint.health.show-details="always" -Dmanagement.endpoints.web.exposure.include="*" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
+              #@ if hasattr(data.values.workload.spec, "env"):
                 #@ for var in data.values.workload.spec.env:
                 - name: #@ var.name
                   value: #@ var.value

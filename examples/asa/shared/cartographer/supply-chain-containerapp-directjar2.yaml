@@ -58,3 +58,6 @@ spec:
       configs:
         - name: config
           resource: config-provider
+      images:
+        - name: image
+          resource: image-builder

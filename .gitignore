@@ -16,4 +16,5 @@ kubeconfig
 .vscode/launch.json
 .vscode/settings.json
 .vscode/targets.log
-examples/asa/temp
+examples/asa/temp/*
+examples/asa/temp/zhiyongli/temp.yaml

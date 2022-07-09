@@ -51,12 +51,24 @@ spec:
                 metadata:
                   name: $(workload.metadata.name)$
                 spec:
-                  template: ${config}$
                   configuration:
                     ingress:
                       allowInsecure: true
                       external: true
                       targetPort: 8080
+                  template:
+                    containers:
+                    - env:
+                      - name: HTTP_PORT
+                        secretRef: ""
+                        value: "8080"
+                      - name: JAVA_TOOL_OPTIONS
+                        value: $(configs.config.config.spec.containers[0].env[0].value)$
+                      - name: $(workload.spec.env[0].name)$
+                        value: "$(workload.spec.env[0].value)$"
+                      image: $(images.image.image)$
+                      name: $(workload.metadata.name)$
+                      resources: {}
       template:
         - ytt: {}
       deploy:

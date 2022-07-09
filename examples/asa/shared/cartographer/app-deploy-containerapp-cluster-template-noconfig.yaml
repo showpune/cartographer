@@ -34,7 +34,7 @@ spec:
     apiVersion: kappctrl.k14s.io/v1alpha1
     kind: App
     metadata:
-      name: workload
+      name: $(workload.metadata.name)$
     spec:
       cluster:
         namespace: k8se-apps
@@ -62,12 +62,11 @@ spec:
                       - name: HTTP_PORT
                         secretRef: ""
                         value: "8080"
+                      - name: $(workload.spec.env[0].name)$
+                        value: "$(workload.spec.env[0].value)$"
                       image: $(images.image.image)$
                       name: $(workload.metadata.name)$
-                      resources:
-                        cpu: "1"
-                        ephemeral-storage: ""
-                        memory: 1000Mi
+                      resources: {}
       template:
         - ytt: {}
       deploy:

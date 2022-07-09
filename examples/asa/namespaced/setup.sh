@@ -3,7 +3,7 @@ kubectl create namespace $namespace
 kubectl config set-context --current --namespace=$namespace
 export kubenamespace=$namespace
 
-read -s -p "please enter your private password: " dockerpassword
+read -s -p "please enter your private ACR password: " dockerpassword
 echo 'Create secret to write the customer image'
 kubectl create secret docker-registry private-registry-credentials --docker-server=https://index.docker.io/v1/ --docker-username=showpune --docker-password=$dockerpassword --docker-email=zhiyongli@microsoft.com 
 

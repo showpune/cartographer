@@ -33,6 +33,9 @@ spec:
         value: "true"
       - name: BPE_TARGET
         value: "native image from source code"
+  env:
+    - name: BPE_TARGET
+      value: "Runtime native image from source code"
   params:
     - name: builder_name
       value: java-native-builder
