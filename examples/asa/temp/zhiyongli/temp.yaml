@@ -9,7 +9,10 @@ spec:
   build:
     env:
       - name: BPE_TARGET
-        value: "normal image from direct jar"
+        value: "Normal image from direct jar"
+  env:
+    - name: BPE_TARGET
+      value: "Runtime Normal image from direct jar"
   params:
     - name: image_prefix
       value: showpune/cartographer-zhiyongli-
@@ -17,3 +20,207 @@ spec:
       value: https://mssdevsharedstorage.file.core.windows.net/zhiyongtest/directjar/java-native-0.0.1-SNAPSHOT.jar?se=2022-10-10T10%3A48%3A45Z&sp=r&sv=2018-11-09&sr=f&sig=AWHdAqwOBxdQfyVunQUfQC0FaAmhWSNoq3NQWJk2gUY%3D
     - name: namespace
       value: zhiyongli
+# Copyright 2021 VMware
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#@ load("@ytt:data", "data")
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: zhiyongli-java-native-directjar-containerapp
+  labels:
+    app.tanzu.vmware.com/workload-type: containerapp-directjar
+spec:
+  serviceAccountName: namespace-service-account
+  build:
+    env:
+      - name: BP_NATIVE_IMAGE
+        value: "true"
+      - name: BPE_TARGET
+        value: "native image from direct jar"
+  env:
+    - name: BPE_TARGET
+      value: "Runtime native image from direct jar"
+  params:
+    - name: image_prefix
+      value: showpune/cartographer-zhiyongli-
+    - name: builder_name
+      value: java-native-builder
+    - name: jar_source
+      value: https://mssdevsharedstorage.file.core.windows.net/zhiyongtest/directjar/java-native-0.0.1-SNAPSHOT.jar?se=2022-10-10T10%3A48%3A45Z&sp=r&sv=2018-11-09&sr=f&sig=AWHdAqwOBxdQfyVunQUfQC0FaAmhWSNoq3NQWJk2gUY%3D
+    - name: namespace
+      value: zhiyongli
+# Copyright 2021 VMware
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#@ load("@ytt:data", "data")
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: zhiyongli-java-native-source-containerapp
+  labels:
+    app.tanzu.vmware.com/workload-type: containerapp
+spec:
+  serviceAccountName: namespace-service-account
+  source:
+    git:
+      url: https://github.com/showpune/java-native.git
+      ref:
+        branch: master
+  build:
+    env:
+      - name: BP_NATIVE_IMAGE
+        value: "true"
+      - name: BPE_TARGET
+        value: "native image from source code"
+  env:
+    - name: BPE_TARGET
+      value: "Runtime native image from source code"
+  params:
+    - name: builder_name
+      value: java-native-builder
+    - name: image_prefix
+      value: showpune/cartographer-zhiyongli-
+    - name: namespace
+      value: zhiyongli
+# Copyright 2021 VMware
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#@ load("@ytt:data", "data")
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: zhiyongli-java-native-source-local
+  labels:
+    app.tanzu.vmware.com/workload-type: web
+spec:
+  serviceAccountName: namespace-service-account
+  source:
+    git:
+      url: https://github.com/showpune/java-native.git
+      ref:
+        branch: master
+  build:
+    env:
+      - name: BPE_TARGET
+        value: "normal image from source code"
+      - name: BP_NATIVE_IMAGE
+        value: "true"
+  params:
+    - name: image_prefix
+      value: showpune/cartographer-zhiyongli-
+    - name: builder_name
+      value: java-native-builder
+# Copyright 2021 VMware
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#@ load("@ytt:data", "data")
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: zhiyongli-java-containerapp
+  labels:
+    app.tanzu.vmware.com/workload-type: containerapp
+spec:
+  serviceAccountName: namespace-service-account
+  source:
+    git:
+      url: https://github.com/showpune/java-native.git
+      ref:
+        branch: master
+  build:
+    env:
+      - name: BPE_TARGET
+        value: "normal image from source code"
+  env:
+    - name: BPE_TARGET
+      value: "Runtiem normal image from source code"
+  params:
+    - name: image_prefix
+      value: showpune/cartographer-zhiyongli-
+    - name: namespace
+      value: zhiyongli
+# Copyright 2021 VMware
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#@ load("@ytt:data", "data")
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: zhiyongli-java
+  labels:
+    app.tanzu.vmware.com/workload-type: web
+spec:
+  serviceAccountName: namespace-service-account
+  source:
+    git:
+      url: https://github.com/showpune/java-native.git
+      ref:
+        branch: master
+  build:
+    env:
+      - name: BPE_TARGET
+        value: "normal image from source code"
+  params:
+    - name: image_prefix
+      value: showpune/cartographer-zhiyongli-

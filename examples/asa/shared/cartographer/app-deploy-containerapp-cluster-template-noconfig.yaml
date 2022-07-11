@@ -45,6 +45,10 @@ spec:
         - inline:
             paths:
               manifest.yml: |
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                    name: <insert-namespace-name-here>
                 ---
                 apiVersion: k8se.microsoft.com/v1alpha1
                 kind: ContainerApp
