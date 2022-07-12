@@ -55,6 +55,9 @@ spec:
       templateRef:
         kind: ClusterTemplate
         name: containerapp-deploy
+      params:
+        - name: namespace
+          default: default
       configs:
         - name: config
           resource: config-provider
