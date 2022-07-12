@@ -1,0 +1,45 @@
+---
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  labels:
+    carto.run/supply-chain-name: supply-chain-containerapp-directjar
+    carto.run/template-kind: Pressure
+  name: currentNS-appNumberCode-containerapp
+  namespace: currentNS
+spec:
+  cluster:
+    kubeconfigSecretRef:
+      key: kubeconfig
+      name: customer-aks
+    namespace: currentNS
+  deploy:
+  - kapp: {}
+  fetch:
+  - inline:
+      paths:
+        manifest.yml: |
+          ---
+          apiVersion: k8se.microsoft.com/v1alpha1
+          kind: ContainerApp
+          metadata:
+            name: currentNS-appNumberCode-containerapp
+          spec:
+            configuration:
+              ingress:
+                allowInsecure: true
+                external: true
+                targetPort: 8080
+            template:
+              containers:
+              - env:
+                - name: HTTP_PORT
+                  secretRef: ""
+                  value: "8080"
+                - name: BPE_TARGET
+                  value: "Runtime native image from direct jar"
+                image: index.docker.io/showpune/cartographer-zhiyong-zhiyong-java-native-directjar-containerapp@sha256:379ef8becc46fe39f04bf865b0d1f4fda365d6c0410307076e26c10f112051c2
+                name: currentNS-appNumberCode-containerapp
+                resources: {}
+  template:
+  - ytt: {}

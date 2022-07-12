@@ -6,14 +6,14 @@ kubectl delete workload -l app.tanzu.vmware.com/workload-type=web-directjar
 kubectl delete workload -l app.tanzu.vmware.com/workload-type=containerapp
 kubectl delete workload -l app.tanzu.vmware.com/workload-type=containerapp-directjar
 
-items=$(kubectl get pods --output 'jsonpath={.items}')
+items=$(kubectl get pods,App --output 'jsonpath={.items}')
 while [ "$items" != "[]" ] ;do
 echo 'There is alive pods, wait for them to be deleted'
 sleep 5
-items=$(kubectl get pods --output 'jsonpath={.items}')
+items=$(kubectl get pods,App --output 'jsonpath={.items}')
 done
 
-echo 'Pod is cleared, now delete the namespace'
+echo 'Pod/App is cleared, now delete the namespace'
 read -e -p "Delete namespace:" -i 'N' isDelete
 if [ "$isDelete" = "Y" ] ;then
 kubectl delete namespace $currentNS

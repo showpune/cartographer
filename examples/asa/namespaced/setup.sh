@@ -17,6 +17,7 @@ az account set --subscription $subscriptionid
 az aks get-credentials --resource-group $resourcegroup --name $aksname --admin --overwrite-existing --file ./containerapp.yaml
 
 echo 'Create secret to access customer aks'
+kubectl delete secret customer-aks
 kubectl create secret generic customer-aks --from-file=kubeconfig=./containerapp.yaml
 
 echo 'Create namespace sa, role and rolebinding'
