@@ -5,9 +5,10 @@ metadata:
   labels:
     carto.run/supply-chain-name: supply-chain-containerapp-directjar
     carto.run/template-kind: Pressure
-  name: currentNS-code-26-containerapp
+  name: currentNS-appNumberCode-containerapp
   namespace: currentNS
 spec:
+  syncPeriod: 30s
   cluster:
     kubeconfigSecretRef:
       key: kubeconfig
@@ -23,7 +24,7 @@ spec:
           apiVersion: k8se.microsoft.com/v1alpha1
           kind: ContainerApp
           metadata:
-            name: currentNS-code-26-containerapp
+            name: currentNS-appNumberCode-containerapp
           spec:
             configuration:
               ingress:
@@ -39,7 +40,7 @@ spec:
                 - name: BPE_TARGET
                   value: "Runtime native image from direct jar"
                 image: index.docker.io/showpune/cartographer-zhiyong-zhiyong-java-native-directjar-containerapp@sha256:379ef8becc46fe39f04bf865b0d1f4fda365d6c0410307076e26c10f112051c2
-                name: currentNS-code-26-containerapp
+                name: currentNS-appNumberCode-containerapp
                 resources: {}
   template:
   - ytt: {}

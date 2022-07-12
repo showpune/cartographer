@@ -8,7 +8,7 @@ metadata:
   name: currentNS-appNumberCode-containerapp
   namespace: currentNS
 spec:
-  syncPeriod: 90s
+  syncPeriod: 30s
   cluster:
     kubeconfigSecretRef:
       key: kubeconfig
