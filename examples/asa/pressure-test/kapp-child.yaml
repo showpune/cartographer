@@ -1,0 +1,121 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "4"
+    kapp-controller.carvel.dev/version: develop
+  labels:
+    kapp.k14s.io/app: "kapp"
+    kapp.k14s.io/association: v1.f3a8d560b9f1f90a098123d934bed657
+  namespace: kapp-controller
+  name: currentNS
+  resourceVersion: "27451216"
+  uid: b576f1f6-4a25-4499-aa9e-52beef2567d8
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: currentNS
+      kapp.k14s.io/app: "1657681852885577659"
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: currentNS
+        kapp.k14s.io/app: "1657681852885577659"
+    spec:
+      containers:
+      - args:
+        - -packaging-global-namespace=kapp-controller-packaging-global
+        - -enable-api-priority-and-fairness=True
+        env:
+        - name: KAPPCTRL_MEM_TMP_DIR
+          value: /etc/kappctrl-mem-tmp
+        - name: KAPPCTRL_SIDECAREXEC_SOCK
+          value: /etc/kappctrl-mem-tmp/sidecarexec.sock
+        - name: KAPPCTRL_WORK_NAMESPCE
+          value: currentNS
+        - name: KAPPCTRL_SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: KAPPCTRL_API_PORT
+          value: "10350"
+        image: index.docker.io/showpune/kapp-controller-test@sha256:335f67bc014974d4ac18cdf19f6e8a112ef147b7ef88766808a9c48ea3252137
+        imagePullPolicy: IfNotPresent
+        name: kapp-controller
+        ports:
+        - containerPort: 10350
+          name: api
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 120m
+            memory: 100Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/kappctrl-mem-tmp
+          name: template-fs
+        - mountPath: /home/kapp-controller
+          name: home
+      - command:
+        - /kapp-controller-sidecarexec
+        env:
+        - name: KAPPCTRL_SIDECAREXEC_SOCK
+          value: /etc/kappctrl-mem-tmp/sidecarexec.sock
+        image: index.docker.io/showpune/kapp-controller-test@sha256:335f67bc014974d4ac18cdf19f6e8a112ef147b7ef88766808a9c48ea3252137
+        imagePullPolicy: IfNotPresent
+        name: kapp-controller-sidecarexec
+        resources:
+          requests:
+            cpu: 120m
+            memory: 100Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - all
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/kappctrl-mem-tmp
+          name: template-fs
+        - mountPath: /home/kapp-controller
+          name: home
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: empty-sa
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: kapp-controller-sa
+      serviceAccountName: kapp-controller-sa
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: template-fs
+      - emptyDir:
+          medium: Memory
+        name: home
+      - emptyDir: {}
+        name: empty-sa

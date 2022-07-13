@@ -25,7 +25,7 @@ metadata:
   uid: f422ce36-2ddc-4f31-978a-88997c5c01a0
 spec:
   progressDeadlineSeconds: 600
-  replicas: 1
+  replicas: 5
   revisionHistoryLimit: 0
   selector:
     matchLabels:

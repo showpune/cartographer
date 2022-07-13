@@ -22,6 +22,7 @@ do
   rm -r temp/$currentNS
   mkdir temp
   mkdir temp/$currentNS
+
   cd temp/$currentNS
   for((j=1;j<=$number;j++));  
   do
@@ -30,6 +31,10 @@ do
   done
   sed s/currentNS/$currentNS/g *.yaml > $currentNS.yaml
   kubectl apply -f $currentNS.yaml -n $currentNS
+
+  sed s/currentNS/$currentNS/g ../../app.yaml.template.yaml > $currentNS.yaml
+  kubectl apply -f $currentNS.yaml -n $currentNS --namespace=kapp-controller
+
   cd ../..
   rm -rf temp/$currentNS
 done
