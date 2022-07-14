@@ -24,6 +24,9 @@ do
   mkdir temp/$currentNS
 
   cd temp/$currentNS
+
+
+  sed s/currentNS/$currentNS/g ../../kapp-child.yaml > 0000.yaml
   for((j=1;j<=$number;j++));  
   do
     appNumberCode="code-${j}"
@@ -31,10 +34,7 @@ do
   done
   sed s/currentNS/$currentNS/g *.yaml > $currentNS.yaml
   kubectl apply -f $currentNS.yaml -n $currentNS
-
-  sed s/currentNS/$currentNS/g ../../app.yaml.template.yaml > $currentNS.yaml
-  kubectl apply -f $currentNS.yaml -n $currentNS --namespace=kapp-controller
-
+  
   cd ../..
   rm -rf temp/$currentNS
 done

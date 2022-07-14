@@ -27,13 +27,23 @@ import (
 	"github.com/vmware-tanzu/cartographer/pkg/apis/v1alpha1"
 	"github.com/vmware-tanzu/cartographer/pkg/controllers"
 	"github.com/vmware-tanzu/cartographer/pkg/utils"
+
+	"os"
 )
 
 type Command struct {
-	Port    int
-	CertDir string
-	Logger  logr.Logger
+	Port                       int
+	CertDir                    string
+	Logger                     logr.Logger
+	WorkNamespace              string
+	workedForNamespaceResource bool
+	workedForClusterResource   bool
 }
+
+const (
+	kappctrlWorkNamespaceEnvKey = "KAPPCTRL_WORK_NAMESPACE"
+	cluster                     = "cluster"
+)
 
 func (cmd *Command) Execute(ctx context.Context) error {
 	log.SetLogger(cmd.Logger)
@@ -49,22 +59,39 @@ func (cmd *Command) Execute(ctx context.Context) error {
 		return fmt.Errorf("add to scheme: %w", err)
 	}
 
+	cmd.workedForNamespaceResource = true
+	cmd.workedForClusterResource = true
+	var namespaceWorkedFor = ""
+	if namespaceWorkedFor, ok := os.LookupEnv(kappctrlWorkNamespaceEnvKey); ok {
+		if namespaceWorkedFor == cluster {
+			cmd.workedForNamespaceResource = false
+			cmd.workedForClusterResource = true
+		} else if namespaceWorkedFor != "" {
+			cmd.workedForNamespaceResource = true
+			cmd.workedForClusterResource = false
+		}
+		l.Info("Start for work namespace", "namespace", namespaceWorkedFor)
+	} else {
+		l.Info("Start for all namespace", "namespace", namespaceWorkedFor)
+	}
+
 	mgr, err := manager.New(cfg, manager.Options{
 		Port:               cmd.Port,
 		CertDir:            cmd.CertDir,
 		Scheme:             scheme,
 		MetricsBindAddress: "0",
+		Namespace:          namespaceWorkedFor,
 	})
 	if err != nil {
 		return fmt.Errorf("failed to create new manager: %w", err)
 	}
 
-	if err := registerControllers(mgr); err != nil {
+	if err := registerControllers(mgr, cmd); err != nil {
 		return fmt.Errorf("failed to register controllers: %w", err)
 	}
 
 	if cmd.CertDir != "" {
-		if err := registerWebhooks(mgr); err != nil {
+		if err := registerWebhooks(mgr, cmd); err != nil {
 			return fmt.Errorf("failed to register webhooks: %w", err)
 		}
 	} else {
@@ -78,61 +105,66 @@ func (cmd *Command) Execute(ctx context.Context) error {
 	return nil
 }
 
-func registerControllers(mgr manager.Manager) error {
-	if err := (&controllers.WorkloadReconciler{}).SetupWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to register workload controller: %w", err)
-	}
+func registerControllers(mgr manager.Manager, cmd Command) error {
+	if cmd.workedForNamespaceResource {
+		if err := (&controllers.WorkloadReconciler{}).SetupWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to register workload controller: %w", err)
+		}
 
-	if err := (&controllers.SupplyChainReconciler{}).SetupWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to register supply chain controller: %w", err)
-	}
+		if err := (&controllers.DeliverableReconciler{}).SetupWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to register deliverable controller: %w", err)
+		}
 
-	if err := (&controllers.DeliverableReconciler{}).SetupWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to register deliverable controller: %w", err)
+		if err := (&controllers.RunnableReconciler{}).SetupWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to register runnable controller: %w", err)
+		}
 	}
+	if cmd.workedForClusterResource {
+		if err := (&controllers.SupplyChainReconciler{}).SetupWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to register supply chain controller: %w", err)
+		}
 
-	if err := (&controllers.DeliveryReconiler{}).SetupWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to register delivery controller: %w", err)
-	}
-
-	if err := (&controllers.RunnableReconciler{}).SetupWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to register runnable controller: %w", err)
+		if err := (&controllers.DeliveryReconiler{}).SetupWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to register delivery controller: %w", err)
+		}
 	}
 
 	return nil
 }
 
-func registerWebhooks(mgr manager.Manager) error {
-	if err := (&v1alpha1.ClusterSupplyChain{}).SetupWebhookWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to setup cluster supply chain webhook: %w", err)
-	}
+func registerWebhooks(mgr manager.Manager, cmd Command) error {
+	if cmd.workedForClusterResource {
+		if err := (&v1alpha1.ClusterSupplyChain{}).SetupWebhookWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to setup cluster supply chain webhook: %w", err)
+		}
 
-	if err := (&v1alpha1.ClusterDelivery{}).SetupWebhookWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to setup cluster delivery webhook: %w", err)
-	}
+		if err := (&v1alpha1.ClusterDelivery{}).SetupWebhookWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to setup cluster delivery webhook: %w", err)
+		}
 
-	if err := (&v1alpha1.ClusterConfigTemplate{}).SetupWebhookWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to setup cluster config template webhook: %w", err)
-	}
+		if err := (&v1alpha1.ClusterConfigTemplate{}).SetupWebhookWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to setup cluster config template webhook: %w", err)
+		}
 
-	if err := (&v1alpha1.ClusterDeploymentTemplate{}).SetupWebhookWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to setup cluster deployment template webhook: %w", err)
-	}
+		if err := (&v1alpha1.ClusterDeploymentTemplate{}).SetupWebhookWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to setup cluster deployment template webhook: %w", err)
+		}
 
-	if err := (&v1alpha1.ClusterImageTemplate{}).SetupWebhookWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to setup cluster image template webhook: %w", err)
-	}
+		if err := (&v1alpha1.ClusterImageTemplate{}).SetupWebhookWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to setup cluster image template webhook: %w", err)
+		}
 
-	if err := (&v1alpha1.ClusterRunTemplate{}).SetupWebhookWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to setup cluster run template webhook: %w", err)
-	}
+		if err := (&v1alpha1.ClusterRunTemplate{}).SetupWebhookWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to setup cluster run template webhook: %w", err)
+		}
 
-	if err := (&v1alpha1.ClusterSourceTemplate{}).SetupWebhookWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to setup cluster source template webhook: %w", err)
-	}
+		if err := (&v1alpha1.ClusterSourceTemplate{}).SetupWebhookWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to setup cluster source template webhook: %w", err)
+		}
 
-	if err := (&v1alpha1.ClusterTemplate{}).SetupWebhookWithManager(mgr); err != nil {
-		return fmt.Errorf("failed to setup cluster template webhook: %w", err)
+		if err := (&v1alpha1.ClusterTemplate{}).SetupWebhookWithManager(mgr); err != nil {
+			return fmt.Errorf("failed to setup cluster template webhook: %w", err)
+		}
 	}
 
 	return nil
