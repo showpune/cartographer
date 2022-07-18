@@ -21,7 +21,7 @@ ROOT=$(cd "$(dirname $0)"/.. && pwd)
 readonly ROOT
 
 readonly SCRATCH=${SCRATCH:-$(mktemp -d)}
-readonly REGISTRY=${REGISTRY:-"$($ROOT/hack/ip.py):5001"}
+readonly REGISTRY=${REGISTRY:-"showpune"}
 readonly RELEASE_DATE=${RELEASE_DATE:-$(TZ=UTC date +"%Y-%m-%dT%H:%M:%SZ")}
 
 readonly YTT_VERSION=0.39.0

@@ -26,9 +26,6 @@ do
 
   kubectl delete App -l carto.run/template-kind=Pressure -n $currentNS --wait=false
 
-  kubectl delete deployment -l kapp.k14s.io/app=kapp -n $currentNS --wait=false
-  
-
   if [ $delete_namespace == "Y" ] ;then
   items=$(kubectl get pods,App -n $currentNS --output 'jsonpath={.items}')
   while [ "$items" != "[]" ] ;do

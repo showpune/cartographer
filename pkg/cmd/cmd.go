@@ -41,8 +41,8 @@ type Command struct {
 }
 
 const (
-	kappctrlWorkNamespaceEnvKey = "KAPPCTRL_WORK_NAMESPACE"
-	cluster                     = "cluster"
+	cartographerctrlWorkNamespaceEnvKey = "CARTOGRAPHER_WORK_NAMESPCE"
+	cluster                             = "cluster"
 )
 
 func (cmd *Command) Execute(ctx context.Context) error {
@@ -62,7 +62,7 @@ func (cmd *Command) Execute(ctx context.Context) error {
 	cmd.workedForNamespaceResource = true
 	cmd.workedForClusterResource = true
 	var namespaceWorkedFor = ""
-	if namespaceWorkedFor, ok := os.LookupEnv(kappctrlWorkNamespaceEnvKey); ok {
+	if namespaceWorkedFor, ok := os.LookupEnv(cartographerctrlWorkNamespaceEnvKey); ok {
 		if namespaceWorkedFor == cluster {
 			cmd.workedForNamespaceResource = false
 			cmd.workedForClusterResource = true
@@ -105,7 +105,7 @@ func (cmd *Command) Execute(ctx context.Context) error {
 	return nil
 }
 
-func registerControllers(mgr manager.Manager, cmd Command) error {
+func registerControllers(mgr manager.Manager, cmd *Command) error {
 	if cmd.workedForNamespaceResource {
 		if err := (&controllers.WorkloadReconciler{}).SetupWithManager(mgr); err != nil {
 			return fmt.Errorf("failed to register workload controller: %w", err)
@@ -132,7 +132,7 @@ func registerControllers(mgr manager.Manager, cmd Command) error {
 	return nil
 }
 
-func registerWebhooks(mgr manager.Manager, cmd Command) error {
+func registerWebhooks(mgr manager.Manager, cmd *Command) error {
 	if cmd.workedForClusterResource {
 		if err := (&v1alpha1.ClusterSupplyChain{}).SetupWebhookWithManager(mgr); err != nil {
 			return fmt.Errorf("failed to setup cluster supply chain webhook: %w", err)

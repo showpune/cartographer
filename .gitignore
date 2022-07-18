@@ -18,3 +18,4 @@ kubeconfig
 .vscode/targets.log
 examples/asa/temp/*
 examples/asa/temp/zhiyongli/temp.yaml
+examples/asa/pressure-test/temp/*

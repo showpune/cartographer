@@ -45,25 +45,28 @@ spec:
             defaultMode: 420
             secretName: cartographer-webhook
       containers:
-        - name: cartographer-controller
-          image: ko://github.com/vmware-tanzu/cartographer/cmd/cartographer
-          args:
-            - -cert-dir=/cert
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
-            capabilities:
-              drop:
-                - all
-          volumeMounts:
-            - mountPath: /cert
-              name: cert
-              readOnly: true
-          resources:
-            limits:
-              cpu: 1
-              memory: 1Gi
-            requests:
-              cpu: 500m
-              memory: 512Mi
+      - name: cartographer-controller
+        image: ko://github.com/vmware-tanzu/cartographer/cmd/cartographer
+        env:
+        - name: CARTOGRAPHER_WORK_NAMESPCE
+          value: #@ str(data.values.work_namespace)
+        args:
+          - -cert-dir=/cert
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          capabilities:
+            drop:
+              - all
+        volumeMounts:
+          - mountPath: /cert
+            name: cert
+            readOnly: true
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi

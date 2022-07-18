@@ -15,3 +15,4 @@
 #@data/values
 ---
 version: v0.0.0-dev
+work_namespace: cluster
