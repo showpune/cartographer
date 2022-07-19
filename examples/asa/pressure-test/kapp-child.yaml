@@ -140,3 +140,56 @@ spec:
         name: home
       - emptyDir: {}
         name: empty-sa
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cartographer-controller
+  namespace: cartographer-system
+  labels:
+    app.kubernetes.io/name: cartographer-controller
+    app.kubernetes.io/version: v0.0.0-dev
+    app.kubernetes.io/component: cartographer
+spec:
+  selector:
+    matchLabels:
+      app: cartographer-controller
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cartographer-controller
+    spec:
+      serviceAccount: cartographer-controller
+      volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: cartographer-webhook
+      containers:
+        - name: cartographer-controller
+          image: showpune/cartographer@sha256:f7a1fe92a2231d35ef93160a2efeecf25b0a2c4a97ae69d8f5e7c30c6248481f
+            env:
+            - name: CARTOGRAPHER_WORK_NAMESPCE
+              value: currentNS
+          args:
+            - -cert-dir=/cert
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - all
+          volumeMounts:
+            - mountPath: /cert
+              name: cert
+              readOnly: true
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+

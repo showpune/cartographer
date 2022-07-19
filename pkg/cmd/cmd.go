@@ -66,7 +66,7 @@ func (cmd *Command) Execute(ctx context.Context) error {
 		if namespaceWorkedFor == cluster {
 			cmd.workedForNamespaceResource = false
 			cmd.workedForClusterResource = true
-		} else if namespaceWorkedFor != "" {
+		} else if namespaceWorkedFor != "" && namespaceWorkedFor != "None" {
 			cmd.workedForNamespaceResource = true
 			cmd.workedForClusterResource = false
 		}

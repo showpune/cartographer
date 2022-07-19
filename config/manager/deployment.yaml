@@ -1,33 +1,32 @@
-# Copyright 2021 VMware
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-#@ load("@ytt:data", "data")
----
 apiVersion: v1
-kind: Namespace
+kind: ServiceAccount
 metadata:
-  name: cartographer-system
+  name: cartographer-controller
+  namespace: zhiyong
 
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cartographer-cluster-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cartographer-controller-admin
+subjects:
+  - kind: ServiceAccount
+    name: cartographer-controller
+    namespace: zhiyong
+---   
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cartographer-controller
-  namespace: cartographer-system
+  namespace: zhiyong
   labels:
     app.kubernetes.io/name: cartographer-controller
-    app.kubernetes.io/version: #@ data.values.version
+    app.kubernetes.io/version: v0.0.0-dev
+    app.kubernetes.io/component: cartographer
 spec:
   selector:
     matchLabels:
@@ -39,34 +38,23 @@ spec:
         app: cartographer-controller
     spec:
       serviceAccount: cartographer-controller
-      volumes:
-        - name: cert
-          secret:
-            defaultMode: 420
-            secretName: cartographer-webhook
       containers:
-      - name: cartographer-controller
-        image: ko://github.com/vmware-tanzu/cartographer/cmd/cartographer
-        env:
-        - name: CARTOGRAPHER_WORK_NAMESPCE
-          value: #@ str(data.values.work_namespace)
-        args:
-          - -cert-dir=/cert
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          capabilities:
-            drop:
-              - all
-        volumeMounts:
-          - mountPath: /cert
-            name: cert
-            readOnly: true
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 200m
-            memory: 256Mi
+        - name: cartographer-controller
+          image: showpune/cartographer:latest
+          env:
+            - name: CARTOGRAPHER_WORK_NAMESPCE
+              value: zhiyong
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - all
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
