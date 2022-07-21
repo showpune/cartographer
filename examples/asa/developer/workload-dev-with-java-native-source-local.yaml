@@ -17,7 +17,7 @@
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: currentNS-java-native-source-local
+  name: currentNS-java-native-source
   labels:
     app.tanzu.vmware.com/workload-type: web
 spec:

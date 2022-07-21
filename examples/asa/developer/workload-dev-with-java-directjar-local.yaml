@@ -17,20 +17,22 @@
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: currentNS-java-source
+  name: currentNS-java-directjar
   labels:
-    app.tanzu.vmware.com/workload-type: web
+    app.tanzu.vmware.com/workload-type: web-directjar
 spec:
   serviceAccountName: namespace-service-account
-  source:
-    git:
-      url: https://github.com/showpune/java-native.git
-      ref:
-        branch: master
   build:
     env:
       - name: BPE_TARGET
-        value: "normal image from source code"
+        value: "Normal image from direct jar"
+  env:
+    - name: BPE_TARGET
+      value: "Runtime Normal image from direct jar"
   params:
     - name: image_prefix
       value: showpune/cartographer-currentNS-
+    - name: jar_source
+      value: https://mssdevsharedstorage.file.core.windows.net/zhiyongtest/directjar/java-native-0.0.1-SNAPSHOT.jar?se=2022-10-29T13%3A52%3A00Z&sp=r&sv=2021-06-08&sr=f&sig=Md77vAJyhjqsdOcwowSG%2BHPDwihZYBemVZe6KkccVoo%3D
+    - name: namespace
+      value: currentNS
