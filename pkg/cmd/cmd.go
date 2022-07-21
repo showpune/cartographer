@@ -41,7 +41,7 @@ type Command struct {
 }
 
 const (
-	cartographerctrlWorkNamespaceEnvKey = "CARTOGRAPHER_WORK_NAMESPCE"
+	cartographerctrlWorkNamespaceEnvKey = "WORK_NAMESPCE"
 	cluster                             = "cluster"
 )
 
@@ -61,7 +61,7 @@ func (cmd *Command) Execute(ctx context.Context) error {
 
 	cmd.workedForNamespaceResource = true
 	cmd.workedForClusterResource = true
-	var namespaceWorkedFor = ""
+	var workNamespace = ""
 	if namespaceWorkedFor, ok := os.LookupEnv(cartographerctrlWorkNamespaceEnvKey); ok {
 		if namespaceWorkedFor == cluster {
 			cmd.workedForNamespaceResource = false
@@ -71,6 +71,7 @@ func (cmd *Command) Execute(ctx context.Context) error {
 			cmd.workedForClusterResource = false
 		}
 		l.Info("Start for work namespace", "namespace", namespaceWorkedFor)
+		workNamespace = namespaceWorkedFor
 	} else {
 		l.Info("Start for all namespace", "namespace", namespaceWorkedFor)
 	}
@@ -80,7 +81,7 @@ func (cmd *Command) Execute(ctx context.Context) error {
 		CertDir:            cmd.CertDir,
 		Scheme:             scheme,
 		MetricsBindAddress: "0",
-		Namespace:          namespaceWorkedFor,
+		Namespace:          workNamespace,
 	})
 	if err != nil {
 		return fmt.Errorf("failed to create new manager: %w", err)
